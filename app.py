@@ -42,37 +42,344 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for better styling
+# Professional FinTech CSS Styling (inspired by Stripe, Plaid, Razorpay)
 st.markdown("""
 <style>
-    .main-header {
-        font-size: 3rem;
-        font-weight: bold;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
+    /* Import modern fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Global Styles */
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
-    .agent-card {
-        padding: 1.5rem;
-        border-radius: 10px;
-        background-color: #f8f9fa;
-        border-left: 5px solid #667eea;
-        margin: 1rem 0;
+    
+    /* Remove Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Main container */
+    .main {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 0;
     }
-    .metric-card {
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #ffffff !important;
+    }
+    
+    /* Hero Header */
+    .hero-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1rem;
-        border-radius: 10px;
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
         color: white;
         text-align: center;
     }
-    .chat-bubble {
-        background-color: #e3f2fd;
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -1px;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+        font-weight: 400;
+        opacity: 0.95;
+        margin-top: 0.5rem;
+    }
+    
+    .hero-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 1rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Navigation Pills */
+    .nav-pills {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 0;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .nav-pill {
+        background: white;
+        padding: 1rem 2rem;
         border-radius: 15px;
-        padding: 1rem 1.5rem;
-        margin: 0.5rem 0;
-        border-left: 4px solid #2196f3;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        min-width: 200px;
+    }
+    
+    .nav-pill:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .nav-pill-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .nav-pill-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 0;
+    }
+    
+    .nav-pill-desc {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-top: 0.3rem;
+    }
+    
+    /* Metric Cards */
+    .metric-card {
+        background: white;
+        padding: 1.8rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+    }
+    
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+    }
+    
+    .metric-label {
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 0.5rem;
+    }
+    
+    .metric-trend {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 0.8rem;
+    }
+    
+    .trend-positive {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .trend-negative {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    /* Agent Cards */
+    .agent-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        margin: 1.5rem 0;
+        border-left: 5px solid #667eea;
+        transition: all 0.3s ease;
+    }
+    
+    .agent-card:hover {
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+        transform: translateX(5px);
+    }
+    
+    .agent-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .agent-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    .agent-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 0;
+    }
+    
+    .agent-status {
+        display: inline-block;
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: #d1fae5;
+        color: #065f46;
+        margin-left: auto;
+    }
+    
+    /* Alert Boxes */
+    .alert-box {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        border-left: 4px solid;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .alert-warning {
+        border-left-color: #f59e0b;
+        background: linear-gradient(90deg, #fffbeb 0%, white 100%);
+    }
+    
+    .alert-danger {
+        border-left-color: #ef4444;
+        background: linear-gradient(90deg, #fef2f2 0%, white 100%);
+    }
+    
+    .alert-success {
+        border-left-color: #10b981;
+        background: linear-gradient(90deg, #f0fdf4 0%, white 100%);
+    }
+    
+    .alert-info {
+        border-left-color: #3b82f6;
+        background: linear-gradient(90deg, #eff6ff 0%, white 100%);
+    }
+    
+    /* Chat Bubble */
+    .chat-bubble {
+        background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        position: relative;
+    }
+    
+    .chat-bubble:before {
+        content: '🤖';
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        font-size: 2rem;
+    }
+    
+    .chat-content {
+        margin-top: 1rem;
+        line-height: 1.7;
+        color: #1e293b;
+    }
+    
+    /* Progress Bar */
+    .progress-container {
+        background: #e2e8f0;
+        border-radius: 10px;
+        height: 12px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+    
+    /* Tables */
+    .dataframe {
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* Info boxes */
+    .info-box {
+        background: linear-gradient(135deg, #e0e7ff 0%, white 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+        margin: 1rem 0;
+    }
+    
+    /* Statistics Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    /* Feature Tags */
+    .feature-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin: 0.3rem;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -438,43 +745,80 @@ def credit_coach_agent_logic(borrower_row):
 def main():
     """Main application entry point with navigation."""
     
-    # Sidebar Navigation
-    st.sidebar.title("🤖 AURA Navigation")
+    # Hero Header
+    st.markdown("""
+    <div class="hero-header">
+        <div class="hero-title">🤖 AURA</div>
+        <div class="hero-subtitle">Agentic Underwriting & Risk Assistant</div>
+        <div class="hero-badge">MumbaiHacks 2025 | FinTech Track | Agentic AI</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Professional Sidebar Navigation
+    st.sidebar.markdown("""
+    <div style='text-align: center; padding: 2rem 0;'>
+        <h1 style='margin: 0; font-size: 2.5rem;'>🤖</h1>
+        <h2 style='margin: 0.5rem 0; font-size: 1.5rem; font-weight: 700;'>AURA</h2>
+        <p style='margin: 0; font-size: 0.85rem; opacity: 0.8;'>Agentic AI Platform</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
     st.sidebar.markdown("---")
     
     page = st.sidebar.radio(
-        "Select Agent Dashboard:",
+        "Navigate to:",
         ["🏦 Risk-Management Agent", "🤝 Credit-Coach Agent", "📊 Model Insights"],
-        label_visibility="collapsed"
+        label_visibility="visible"
     )
     
     st.sidebar.markdown("---")
+    
+    # Sidebar Info Cards
     st.sidebar.markdown("""
-    ### About AURA
+    <div style='background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;'>
+        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>🎯 The Problem</h3>
+        <p style='margin: 0; font-size: 0.85rem; line-height: 1.6;'>
+            <strong>142M Indians</strong> have dormant bank accounts<br/>
+            <strong>70%</strong> lack credit history<br/>
+            <strong>$5.7T</strong> global financing gap
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    **Agentic Underwriting & Risk Assistant**
+    st.sidebar.markdown("""
+    <div style='background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;'>
+        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>🚀 Our Solution</h3>
+        <div style='font-size: 0.85rem; line-height: 1.8;'>
+            <div style='margin: 0.5rem 0;'>📊 Data Aggregation</div>
+            <div style='margin: 0.5rem 0;'>🧠 Feature Engineering</div>
+            <div style='margin: 0.5rem 0;'>🎯 Risk Assessment</div>
+            <div style='margin: 0.5rem 0;'>🔍 Explainability</div>
+            <div style='margin: 0.5rem 0;'>🏦 Risk Management</div>
+            <div style='margin: 0.5rem 0;'>🤝 Credit Coaching</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
-    **6-Agent AI Ecosystem:**
-    - 📊 Data Aggregation (AA Framework)
-    - 🧠 Feature Engineering (nuFormer)
-    - 🎯 Risk Assessment (HE Inference)
-    - 🔍 Explainability (SHAP + LIME)
-    - 🏦 Risk-Management (Proactive)
-    - 🤝 Credit-Coach (Empowerment)
+    st.sidebar.markdown("""
+    <div style='background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;'>
+        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>📈 Impact</h3>
+        <div style='font-size: 0.85rem; line-height: 1.8;'>
+            <div style='margin: 0.5rem 0;'><strong>39%</strong> default reduction</div>
+            <div style='margin: 0.5rem 0;'><strong>25-35%</strong> credit improvement</div>
+            <div style='margin: 0.5rem 0;'><strong>142M</strong> accounts activated</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
-    **Impact:**
-    - 39% default reduction
-    - 25-35% credit improvement
-    - 142M dormant accounts activated
+    st.sidebar.markdown("---")
     
-    ---
-    
-    **MumbaiHacks 2025**  
-    *FinTech Track - Agentic AI*
-    
-    Built on Account Aggregator framework  
-    Privacy via Homomorphic Encryption
-    """)
+    st.sidebar.markdown("""
+    <div style='text-align: center; padding: 1rem 0; font-size: 0.75rem; opacity: 0.7;'>
+        <p style='margin: 0.3rem 0;'>🔒 Homomorphic Encryption</p>
+        <p style='margin: 0.3rem 0;'>🔍 SHAP + LIME Explainability</p>
+        <p style='margin: 0.3rem 0;'>🏛️ RBI Account Aggregator</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Load data and train model
     with st.spinner("🔄 Initializing AURA agents and ML models..."):
@@ -500,14 +844,21 @@ def render_risk_management_dashboard(df, model, scaler, feature_cols):
     - Context-aware communication strategies
     """
     
-    st.markdown('<h1 class="main-header">🏦 Risk-Management Agent Dashboard</h1>', unsafe_allow_html=True)
-    st.markdown("**Proactive monitoring and intelligent intervention for your loan portfolio**")
-    st.caption("Addressing India's paradox: 142M accounts exist, but remain dormant due to lack of engagement")
+    # Page Header
+    st.markdown("""
+    <div style='background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 2rem;'>
+        <h1 style='margin: 0; color: #1a1a2e; font-size: 2.5rem; font-weight: 800;'>🏦 Risk-Management Agent</h1>
+        <p style='margin: 0.5rem 0 0 0; color: #64748b; font-size: 1.1rem;'>Proactive monitoring and intelligent intervention for your loan portfolio</p>
+        <div class='feature-tag' style='margin-top: 1rem;'>142M Dormant Accounts Targeted</div>
+        <div class='feature-tag'>Account Aggregator Framework</div>
+        <div class='feature-tag'>Autonomous Decision-Making</div>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Privacy indicator
     simulate_homomorphic_encryption(df)
     
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
     
     # Calculate agent outputs for all borrowers
     agent_outputs = []
@@ -515,8 +866,11 @@ def render_risk_management_dashboard(df, model, scaler, feature_cols):
         output = risk_management_agent_logic(row, model, scaler, feature_cols)
         agent_outputs.append(output)
     
-    # Key Portfolio Metrics
-    st.subheader("📈 Portfolio Health Overview")
+    # Key Portfolio Metrics with Professional Cards
+    st.markdown("""
+    <h2 style='color: #1a1a2e; font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;'>📈 Portfolio Health Overview</h2>
+    """, unsafe_allow_html=True)
+    
     col1, col2, col3, col4 = st.columns(4)
     
     total_loans = len(agent_outputs)
@@ -524,25 +878,67 @@ def render_risk_management_dashboard(df, model, scaler, feature_cols):
     defaulted = sum(1 for x in agent_outputs if x['status'] == 'High Risk - Defaulted')
     healthy = sum(1 for x in agent_outputs if x['status'] == 'Active & Healthy')
     
-    col1.metric("Total Loans", f"{total_loans}")
-    col2.metric("At Risk", f"{at_risk}", delta=f"{(at_risk/total_loans)*100:.1f}%", delta_color="inverse")
-    col3.metric("High Risk/Defaulted", f"{defaulted}", delta=f"{(defaulted/total_loans)*100:.1f}%", delta_color="inverse")
-    col4.metric("Active & Healthy", f"{healthy}", delta=f"{(healthy/total_loans)*100:.1f}%", delta_color="normal")
+    with col1:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-value">{total_loans}</div>
+            <div class="metric-label">Total Loans</div>
+            <div class="metric-trend trend-positive">Active Portfolio</div>
+        </div>
+        """, unsafe_allow_html=True)
     
-    st.markdown("---")
+    with col2:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-value">{at_risk}</div>
+            <div class="metric-label">At Risk</div>
+            <div class="metric-trend trend-negative">{(at_risk/total_loans)*100:.1f}% of portfolio</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-value">{defaulted}</div>
+            <div class="metric-label">High Risk</div>
+            <div class="metric-trend trend-negative">{(defaulted/total_loans)*100:.1f}% requires action</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-value">{healthy}</div>
+            <div class="metric-label">Healthy</div>
+            <div class="metric-trend trend-positive">{(healthy/total_loans)*100:.1f}% performing well</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)
     
     # Agent Workspace Tabs
-    st.subheader("🤖 Agent Workspace: Live Alerts & Intelligence")
+    st.markdown("""
+    <h2 style='color: #1a1a2e; font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem;'>🤖 Agent Workspace: Live Alerts & Intelligence</h2>
+    """, unsafe_allow_html=True)
+    
     tab1, tab2, tab3 = st.tabs(["🚨 Proactive Alerts (At Risk)", "⚠️ High Risk / Defaulted", "✅ Healthy Portfolio"])
     
     with tab1:
-        st.info("**AURA Agent** has identified borrowers with increasing default risk. **Proactive intervention recommended.**")
+        st.markdown("""
+        <div class="alert-box alert-warning">
+            <strong>🤖 AURA Agent Status:</strong> Autonomous monitoring active. Borrowers with increasing default risk identified below.
+        </div>
+        """, unsafe_allow_html=True)
         
         at_risk_borrowers = [x for x in agent_outputs if x['status'] == 'At Risk']
         at_risk_borrowers.sort(key=lambda x: x['probability'], reverse=True)
         
         if len(at_risk_borrowers) == 0:
-            st.success("✅ No borrowers currently flagged as 'At Risk'. Portfolio is healthy!")
+            st.markdown("""
+            <div class="alert-box alert-success">
+                <strong>✅ Portfolio Status:</strong> No borrowers currently flagged as 'At Risk'. Excellent portfolio health!
+            </div>
+            """, unsafe_allow_html=True)
         else:
             for borrower in at_risk_borrowers:
                 with st.expander(f"🟡 **{borrower['user_id']}** - Default Risk: {borrower['probability']:.1%}", expanded=False):
