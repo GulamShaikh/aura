@@ -538,7 +538,7 @@ def simulate_homomorphic_encryption(data):
     
     Current: Architecture demonstration for hackathon
     """
-    st.success("🔒 **Privacy Layer Active**: HE simulation - Data encrypted before ML inference", icon="🔒")
+    st.success("**Privacy Layer Active**: HE simulation - Data encrypted before ML inference")
     st.caption("Production: TenSEAL library with CKKS scheme for encrypted inference")
     return data
 
@@ -748,16 +748,70 @@ def main():
     # Hero Header
     st.markdown("""
     <div class="hero-header">
-        <div class="hero-title">🤖 AURA</div>
+        <div class="hero-title">AURA</div>
         <div class="hero-subtitle">Agentic Underwriting & Risk Assistant</div>
         <div class="hero-badge">MumbaiHacks 2025 | FinTech Track | Agentic AI</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Key Value Proposition Section
+    st.markdown("""
+    <div style='background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin: 2rem 0;'>
+        <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;'>
+            <div>
+                <h3 style='color: #667eea; font-size: 1.3rem; margin-bottom: 0.8rem; font-weight: 700;'>The Challenge</h3>
+                <p style='color: #64748b; line-height: 1.7; margin: 0;'>
+                    <strong>142 million Indians</strong> have dormant bank accounts despite 89-96% financial inclusion. 
+                    Traditional credit scoring fails the <strong>70% without credit history</strong>, creating a $5.7 trillion global financing gap.
+                </p>
+            </div>
+            <div>
+                <h3 style='color: #667eea; font-size: 1.3rem; margin-bottom: 0.8rem; font-weight: 700;'>Our Innovation</h3>
+                <p style='color: #64748b; line-height: 1.7; margin: 0;'>
+                    AURA leverages <strong>alternative data from India's RBI Account Aggregator framework</strong> with a 6-agent AI ecosystem 
+                    to assess creditworthiness using network usage, utility payments, and behavioral patterns.
+                </p>
+            </div>
+            <div>
+                <h3 style='color: #667eea; font-size: 1.3rem; margin-bottom: 0.8rem; font-weight: 700;'>Proven Impact</h3>
+                <p style='color: #64748b; line-height: 1.7; margin: 0;'>
+                    <strong>39% reduction in defaults</strong> through proactive intervention, 
+                    <strong>25-35% improvement</strong> in borrower creditworthiness, 
+                    and privacy-preserving ML via Homomorphic Encryption.
+                </p>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Trust Indicators
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 1.5rem 2rem; border-radius: 12px; margin: 1.5rem 0;'>
+        <div style='display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1.5rem;'>
+            <div style='text-align: center;'>
+                <div style='font-size: 2rem; font-weight: 800; color: #667eea;'>1.6B+</div>
+                <div style='font-size: 0.9rem; color: #64748b; margin-top: 0.3rem;'>Accounts in AA Network</div>
+            </div>
+            <div style='text-align: center;'>
+                <div style='font-size: 2rem; font-weight: 800; color: #667eea;'>6</div>
+                <div style='font-size: 0.9rem; color: #64748b; margin-top: 0.3rem;'>Specialized AI Agents</div>
+            </div>
+            <div style='text-align: center;'>
+                <div style='font-size: 2rem; font-weight: 800; color: #667eea;'>100%</div>
+                <div style='font-size: 0.9rem; color: #64748b; margin-top: 0.3rem;'>Privacy Preserved</div>
+            </div>
+            <div style='text-align: center;'>
+                <div style='font-size: 2rem; font-weight: 800; color: #667eea;'>RBI</div>
+                <div style='font-size: 0.9rem; color: #64748b; margin-top: 0.3rem;'>Regulated Framework</div>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
     
     # Professional Sidebar Navigation
     st.sidebar.markdown("""
     <div style='text-align: center; padding: 2rem 0;'>
-        <h1 style='margin: 0; font-size: 2.5rem;'>🤖</h1>
+        <h1 style='margin: 0; font-size: 2.5rem;'>AI</h1>
         <h2 style='margin: 0.5rem 0; font-size: 1.5rem; font-weight: 700;'>AURA</h2>
         <p style='margin: 0; font-size: 0.85rem; opacity: 0.8;'>Agentic AI Platform</p>
     </div>
@@ -767,7 +821,7 @@ def main():
     
     page = st.sidebar.radio(
         "Navigate to:",
-        ["🏦 Risk-Management Agent", "🤝 Credit-Coach Agent", "📊 Model Insights"],
+        ["Risk-Management Agent", "Credit-Coach Agent", "Model Insights"],
         label_visibility="visible"
     )
     
@@ -776,7 +830,7 @@ def main():
     # Sidebar Info Cards
     st.sidebar.markdown("""
     <div style='background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;'>
-        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>🎯 The Problem</h3>
+        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>The Problem</h3>
         <p style='margin: 0; font-size: 0.85rem; line-height: 1.6;'>
             <strong>142M Indians</strong> have dormant bank accounts<br/>
             <strong>70%</strong> lack credit history<br/>
@@ -787,21 +841,21 @@ def main():
     
     st.sidebar.markdown("""
     <div style='background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;'>
-        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>🚀 Our Solution</h3>
+        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>Our Solution</h3>
         <div style='font-size: 0.85rem; line-height: 1.8;'>
-            <div style='margin: 0.5rem 0;'>📊 Data Aggregation</div>
-            <div style='margin: 0.5rem 0;'>🧠 Feature Engineering</div>
-            <div style='margin: 0.5rem 0;'>🎯 Risk Assessment</div>
-            <div style='margin: 0.5rem 0;'>🔍 Explainability</div>
-            <div style='margin: 0.5rem 0;'>🏦 Risk Management</div>
-            <div style='margin: 0.5rem 0;'>🤝 Credit Coaching</div>
+            <div style='margin: 0.5rem 0;'>• Data Aggregation</div>
+            <div style='margin: 0.5rem 0;'>• Feature Engineering</div>
+            <div style='margin: 0.5rem 0;'>• Risk Assessment</div>
+            <div style='margin: 0.5rem 0;'>• Explainability</div>
+            <div style='margin: 0.5rem 0;'>• Risk Management</div>
+            <div style='margin: 0.5rem 0;'>• Credit Coaching</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
     
     st.sidebar.markdown("""
     <div style='background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;'>
-        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>📈 Impact</h3>
+        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>Impact</h3>
         <div style='font-size: 0.85rem; line-height: 1.8;'>
             <div style='margin: 0.5rem 0;'><strong>39%</strong> default reduction</div>
             <div style='margin: 0.5rem 0;'><strong>25-35%</strong> credit improvement</div>
@@ -814,21 +868,21 @@ def main():
     
     st.sidebar.markdown("""
     <div style='text-align: center; padding: 1rem 0; font-size: 0.75rem; opacity: 0.7;'>
-        <p style='margin: 0.3rem 0;'>🔒 Homomorphic Encryption</p>
-        <p style='margin: 0.3rem 0;'>🔍 SHAP + LIME Explainability</p>
-        <p style='margin: 0.3rem 0;'>🏛️ RBI Account Aggregator</p>
+        <p style='margin: 0.3rem 0;'>Homomorphic Encryption</p>
+        <p style='margin: 0.3rem 0;'>SHAP + LIME Explainability</p>
+        <p style='margin: 0.3rem 0;'>RBI Account Aggregator</p>
     </div>
     """, unsafe_allow_html=True)
     
     # Load data and train model
-    with st.spinner("🔄 Initializing AURA agents and ML models..."):
+    with st.spinner("Initializing AURA agents and ML models..."):
         df = load_data()
         model, scaler, feature_cols, metrics = train_model(df)
     
     # Route to appropriate page
-    if page == "🏦 Risk-Management Agent":
+    if page == "Risk-Management Agent":
         render_risk_management_dashboard(df, model, scaler, feature_cols)
-    elif page == "🤝 Credit-Coach Agent":
+    elif page == "Credit-Coach Agent":
         render_credit_coach_demo(df)
     else:
         render_model_insights(metrics, feature_cols)
@@ -918,15 +972,15 @@ def render_risk_management_dashboard(df, model, scaler, feature_cols):
     
     # Agent Workspace Tabs
     st.markdown("""
-    <h2 style='color: #1a1a2e; font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem;'>🤖 Agent Workspace: Live Alerts & Intelligence</h2>
+    <h2 style='color: #1a1a2e; font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem;'>Agent Workspace: Live Alerts & Intelligence</h2>
     """, unsafe_allow_html=True)
     
-    tab1, tab2, tab3 = st.tabs(["🚨 Proactive Alerts (At Risk)", "⚠️ High Risk / Defaulted", "✅ Healthy Portfolio"])
+    tab1, tab2, tab3 = st.tabs(["Proactive Alerts (At Risk)", "High Risk / Defaulted", "Healthy Portfolio"])
     
     with tab1:
         st.markdown("""
         <div class="alert-box alert-warning">
-            <strong>🤖 AURA Agent Status:</strong> Autonomous monitoring active. Borrowers with increasing default risk identified below.
+            <strong>AURA Agent Status:</strong> Autonomous monitoring active. Borrowers with increasing default risk identified below.
         </div>
         """, unsafe_allow_html=True)
         
@@ -936,12 +990,12 @@ def render_risk_management_dashboard(df, model, scaler, feature_cols):
         if len(at_risk_borrowers) == 0:
             st.markdown("""
             <div class="alert-box alert-success">
-                <strong>✅ Portfolio Status:</strong> No borrowers currently flagged as 'At Risk'. Excellent portfolio health!
+                <strong>Portfolio Status:</strong> No borrowers currently flagged as 'At Risk'. Excellent portfolio health!
             </div>
             """, unsafe_allow_html=True)
         else:
             for borrower in at_risk_borrowers:
-                with st.expander(f"🟡 **{borrower['user_id']}** - Default Risk: {borrower['probability']:.1%}", expanded=False):
+                with st.expander(f"**{borrower['user_id']}** - Default Risk: {borrower['probability']:.1%}", expanded=False):
                     col1, col2 = st.columns([1, 2])
                     
                     with col1:

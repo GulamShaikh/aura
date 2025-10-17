@@ -1,4 +1,4 @@
-# 🤖 AURA: Agentic Underwriting & Risk Assistant
+# AURA: Agentic Underwriting & Risk Assistant
 
 **MumbaiHacks 2025 - FinTech Track: Agentic AI for Financial Inclusion**
 
@@ -6,9 +6,11 @@
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 
----
+## Live Demo
 
-## 🎯 Problem Statement: The Paradox of Access vs Activation
+**Production Application:** [https://aura2455.streamlit.app/](https://aura2455.streamlit.app/)
+
+## Problem Statement: The Paradox of Access vs Activation
 
 ### The Real Challenge: 142 Million Dormant Dreams
 
@@ -28,11 +30,11 @@ While **89-96% of Indian adults now own a financial account** (up from 35% in 20
 
 **Who Gets Left Behind:**
 
-- 🎓 Students and young professionals
-- 💼 Gig economy workers with irregular income
-- 🌾 Agricultural sector (seasonal income patterns)
-- 🏭 MSMEs operating on cash-flow basis
-- 👩 Women with limited financial autonomy (14% cite "lack of trust")
+- Students and young professionals
+- Gig economy workers with irregular income
+- Agricultural sector (seasonal income patterns)
+- MSMEs operating on cash-flow basis
+- Women with limited financial autonomy (14% cite "lack of trust")
 
 **The Economic Cost:**
 
