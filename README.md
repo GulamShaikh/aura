@@ -432,13 +432,10 @@ Based on our proof-of-concept testing:
 ### Installation & Running
 
 ```bash
-# 1. Clone or extract the project
-cd AURA_MUMBAIHACKS_2025
-
-# 2. Install dependencies
+# 1. Install dependencies (from repo root)
 pip install -r requirements.txt
 
-# 3. Run the application
+# 2. Run the application
 streamlit run app.py
 ```
 

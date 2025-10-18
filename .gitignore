@@ -1,28 +1,56 @@
-# Ignore Python virtual environments
+## Python
+# Virtual environments
 .venv/
 venv/
+ENV/
+env/
+*.venv/
 
-# Ignore Python cache files
+# Byte-compiled / cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.pyd.d
+*.so
 
-# Ignore Jupyter Notebook checkpoints
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage*
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+
+## Streamlit
+.streamlit/secrets.toml
+.streamlit/state.json
+
+## Jupyter
 .ipynb_checkpoints/
 
-# Ignore OS files
+## OS files
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Ignore old dashboard (if deleted)
+## Project specific
+# Old dashboard (if not used)
 aura_dashboard.py
+AURA_MUMBAIHACKS_2025/.git/
+AURA_MUMBAIHACKS_2025/__pycache__/
 
-# Ignore environment and IDE files
+## Environment and IDE files
 .env
 *.env
 .vscode/
 .idea/
 
-# Ignore logs
+## Logs
 *.log
