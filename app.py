@@ -39,7 +39,7 @@ st.set_page_config(
     page_title="AURA - Credit Risk Platform",
     page_icon="🏛️",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Enterprise-Grade FinTech CSS (Government/Banking Standard)
@@ -59,8 +59,38 @@ st.markdown("""
     /* Hide Streamlit Elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
     .stDeployButton {display: none;}
+    
+    /* Style Sidebar Toggle Button (Hamburger) */
+    button[kind="header"] {
+        background-color: #1e3a8a !important;
+        color: white !important;
+        border-radius: 8px !important;
+        padding: 0.5rem !important;
+        border: 2px solid #1e40af !important;
+    }
+    
+    button[kind="header"]:hover {
+        background-color: #1e40af !important;
+        border-color: #2563eb !important;
+    }
+    
+    /* Make hamburger icon dark and visible */
+    [data-testid="collapsedControl"] {
+        background-color: #1e3a8a !important;
+        color: white !important;
+        border-radius: 8px !important;
+        padding: 0.5rem !important;
+    }
+    
+    [data-testid="collapsedControl"]:hover {
+        background-color: #1e40af !important;
+    }
+    
+    [data-testid="collapsedControl"] svg {
+        color: white !important;
+        fill: white !important;
+    }
     
     /* Main Container - Minimal Spacing */
     .main {
