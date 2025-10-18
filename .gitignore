@@ -1,0 +1,28 @@
+# Ignore Python virtual environments
+.venv/
+venv/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore old dashboard (if deleted)
+aura_dashboard.py
+
+# Ignore environment and IDE files
+.env
+*.env
+.vscode/
+.idea/
+
+# Ignore logs
+*.log
