@@ -36,168 +36,245 @@ warnings.filterwarnings('ignore')
 # ============================================================================
 
 st.set_page_config(
-    page_title="AURA: Agentic AI Dashboard",
-    page_icon="🤖",
+    page_title="AURA - Credit Risk Platform",
+    page_icon="🏛️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Professional FinTech CSS Styling (inspired by Stripe, Plaid, Razorpay)
+# Enterprise-Grade FinTech CSS (Government/Banking Standard)
 st.markdown("""
 <style>
-    /* Import modern fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    /* Import Professional Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Source+Sans+Pro:wght@400;600;700&display=swap');
     
-    /* Global Styles */
+    /* Global Reset */
     * {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Roboto', 'Source Sans Pro', -apple-system, sans-serif;
     }
     
-    /* Remove Streamlit branding */
+    /* Hide Streamlit Elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    .stDeployButton {display: none;}
     
-    /* Main container */
+    /* Main Container - Minimal Spacing */
     .main {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: #f8f9fa;
         padding: 0;
+        max-width: 100%;
     }
     
-    /* Sidebar styling */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-        border-right: 1px solid rgba(255,255,255,0.1);
+    .block-container {
+        padding: 1rem 2rem !important;
+        max-width: 1400px !important;
     }
     
-    [data-testid="stSidebar"] * {
-        color: #ffffff !important;
-    }
-    
-    /* Hero Header */
-    .hero-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 3rem 2rem;
-        border-radius: 20px;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
-        color: white;
-        text-align: center;
-    }
-    
-    .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        margin: 0;
-        letter-spacing: -1px;
-    }
-    
-    .hero-subtitle {
-        font-size: 1.2rem;
-        font-weight: 400;
-        opacity: 0.95;
-        margin-top: 0.5rem;
-    }
-    
-    .hero-badge {
-        display: inline-block;
-        background: rgba(255,255,255,0.2);
-        padding: 0.5rem 1.5rem;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-top: 1rem;
-        backdrop-filter: blur(10px);
-    }
-    
-    /* Navigation Pills */
-    .nav-pills {
+    /* Professional Header Bar */
+    .top-nav {
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        padding: 0.8rem 2rem;
         display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        margin: -1rem -2rem 1.5rem -2rem;
+    }
+    
+    .logo-section {
+        display: flex;
+        align-items: center;
         gap: 1rem;
-        padding: 1rem 0;
-        justify-content: center;
-        flex-wrap: wrap;
     }
     
-    .nav-pill {
+    .logo {
+        width: 50px;
+        height: 50px;
         background: white;
-        padding: 1rem 2rem;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 1.5rem;
+        color: #1e3a8a;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    
+    .brand-info h1 {
+        color: white;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 2px;
+    }
+    
+    .brand-info p {
+        color: rgba(255,255,255,0.9);
+        font-size: 0.75rem;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .nav-badge {
+        background: rgba(255,255,255,0.15);
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    /* Hamburger Menu */
+    .hamburger-menu {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 2000;
         cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        min-width: 200px;
+        background: #1e3a8a;
+        padding: 0.8rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     
-    .nav-pill:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    .hamburger-menu span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background: white;
+        margin: 5px 0;
+        transition: 0.3s;
     }
     
-    .nav-pill-icon {
-        font-size: 2.5rem;
+    /* Compact Section Headers */
+    .section-header {
+        background: white;
+        border-left: 4px solid #1e3a8a;
+        padding: 1rem 1.5rem;
+        margin: 1.5rem 0 1rem 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    
+    .section-header h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1e3a8a;
+        margin: 0;
+    }
+    
+    .section-header p {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin: 0.3rem 0 0 0;
+    }
+    
+    /* Compact Info Cards Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .info-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .info-card h3 {
+        color: #1e3a8a;
+        font-size: 1rem;
+        font-weight: 700;
         margin-bottom: 0.5rem;
     }
     
-    .nav-pill-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #1a1a2e;
+    .info-card p {
+        color: #475569;
+        font-size: 0.85rem;
+        line-height: 1.5;
         margin: 0;
     }
     
-    .nav-pill-desc {
-        font-size: 0.85rem;
-        color: #64748b;
-        margin-top: 0.3rem;
+    /* Compact Stats Bar */
+    .stats-bar {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-around;
+        margin: 1rem 0;
     }
     
-    /* Metric Cards */
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #1e3a8a;
+        display: block;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 0.2rem;
+    }
+    
+    /* Professional Metric Cards */
     .metric-card {
         background: white;
-        padding: 1.8rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        border: 1px solid rgba(102, 126, 234, 0.1);
-        transition: all 0.3s ease;
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+        border: 1px solid #e2e8f0;
+        padding: 1.2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
     .metric-value {
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 800;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #1e3a8a;
         margin: 0;
     }
     
     .metric-label {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         color: #64748b;
-        font-weight: 500;
+        font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-top: 0.5rem;
+        margin-top: 0.4rem;
     }
     
     .metric-trend {
         display: inline-block;
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
         font-weight: 600;
-        margin-top: 0.8rem;
+        margin-top: 0.5rem;
     }
     
     .trend-positive {
-        background: #d1fae5;
-        color: #065f46;
+        background: #dcfce7;
+        color: #166534;
     }
     
     .trend-negative {
@@ -205,181 +282,114 @@ st.markdown("""
         color: #991b1b;
     }
     
-    /* Agent Cards */
-    .agent-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        margin: 1.5rem 0;
-        border-left: 5px solid #667eea;
-        transition: all 0.3s ease;
-    }
-    
-    .agent-card:hover {
-        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
-        transform: translateX(5px);
-    }
-    
-    .agent-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    .agent-icon {
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-    }
-    
-    .agent-title {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #1a1a2e;
-        margin: 0;
-    }
-    
-    .agent-status {
-        display: inline-block;
-        padding: 0.3rem 1rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        background: #d1fae5;
-        color: #065f46;
-        margin-left: auto;
-    }
-    
     /* Alert Boxes */
     .alert-box {
         background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        margin: 1rem 0;
         border-left: 4px solid;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        font-size: 0.9rem;
     }
     
     .alert-warning {
         border-left-color: #f59e0b;
-        background: linear-gradient(90deg, #fffbeb 0%, white 100%);
+        background: #fffbeb;
     }
     
     .alert-danger {
-        border-left-color: #ef4444;
-        background: linear-gradient(90deg, #fef2f2 0%, white 100%);
+        border-left-color: #dc2626;
+        background: #fef2f2;
     }
     
     .alert-success {
-        border-left-color: #10b981;
-        background: linear-gradient(90deg, #f0fdf4 0%, white 100%);
+        border-left-color: #059669;
+        background: #f0fdf4;
     }
     
     .alert-info {
-        border-left-color: #3b82f6;
-        background: linear-gradient(90deg, #eff6ff 0%, white 100%);
+        border-left-color: #2563eb;
+        background: #eff6ff;
     }
     
-    /* Chat Bubble */
-    .chat-bubble {
-        background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
-        border-radius: 20px;
-        padding: 1.5rem 2rem;
-        margin: 1rem 0;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
-        position: relative;
+    /* Government Badge */
+    .gov-badge {
+        display: inline-block;
+        background: #1e3a8a;
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0 0.3rem;
     }
     
-    .chat-bubble:before {
-        content: '🤖';
-        position: absolute;
-        top: -20px;
-        left: 20px;
-        font-size: 2rem;
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background: #0f172a;
+        border-right: 1px solid #1e293b;
     }
     
-    .chat-content {
-        margin-top: 1rem;
-        line-height: 1.7;
-        color: #1e293b;
-    }
-    
-    /* Progress Bar */
-    .progress-container {
-        background: #e2e8f0;
-        border-radius: 10px;
-        height: 12px;
-        overflow: hidden;
-        margin: 1rem 0;
-    }
-    
-    .progress-bar {
-        height: 100%;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        border-radius: 10px;
-        transition: width 0.3s ease;
+    [data-testid="stSidebar"] * {
+        color: #e2e8f0 !important;
     }
     
     /* Tables */
     .dataframe {
-        border: none !important;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important;
-        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        font-size: 0.85rem !important;
     }
     
     /* Buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #1e3a8a;
         color: white;
         border: none;
-        border-radius: 10px;
-        padding: 0.75rem 2rem;
+        border-radius: 6px;
+        padding: 0.6rem 1.5rem;
         font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        font-size: 0.9rem;
     }
     
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        background: #1e40af;
     }
     
-    /* Info boxes */
-    .info-box {
-        background: linear-gradient(135deg, #e0e7ff 0%, white 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
-        border-left: 4px solid #667eea;
-        margin: 1rem 0;
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0.5rem;
     }
     
-    /* Statistics Grid */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin: 2rem 0;
-    }
-    
-    /* Feature Tags */
-    .feature-tag {
-        display: inline-block;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
+    .stTabs [data-baseweb="tab"] {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 0.6rem 1.2rem;
         font-weight: 600;
-        margin: 0.3rem;
-        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        font-size: 0.85rem;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: #1e3a8a !important;
+        color: white !important;
+    }
+    
+    /* Remove Extra Spacing */
+    .element-container {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Professional Accreditation Footer */
+    .accreditation {
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        padding: 1rem;
+        margin-top: 2rem;
+        text-align: center;
+        font-size: 0.75rem;
+        color: #64748b;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -745,137 +755,131 @@ def credit_coach_agent_logic(borrower_row):
 def main():
     """Main application entry point with navigation."""
     
-    # Hero Header
+    # Professional Top Navigation Bar
     st.markdown("""
-    <div class="hero-header">
-        <div class="hero-title">AURA</div>
-        <div class="hero-subtitle">Agentic Underwriting & Risk Assistant</div>
-        <div class="hero-badge">MumbaiHacks 2025 | FinTech Track | Agentic AI</div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Key Value Proposition Section
-    st.markdown("""
-    <div style='background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin: 2rem 0;'>
-        <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;'>
-            <div>
-                <h3 style='color: #667eea; font-size: 1.3rem; margin-bottom: 0.8rem; font-weight: 700;'>The Challenge</h3>
-                <p style='color: #64748b; line-height: 1.7; margin: 0;'>
-                    <strong>142 million Indians</strong> have dormant bank accounts despite 89-96% financial inclusion. 
-                    Traditional credit scoring fails the <strong>70% without credit history</strong>, creating a $5.7 trillion global financing gap.
-                </p>
+    <div class="top-nav">
+        <div class="logo-section">
+            <div class="logo">AR</div>
+            <div class="brand-info">
+                <h1>AURA</h1>
+                <p>Credit Risk Intelligence Platform</p>
             </div>
-            <div>
-                <h3 style='color: #667eea; font-size: 1.3rem; margin-bottom: 0.8rem; font-weight: 700;'>Our Innovation</h3>
-                <p style='color: #64748b; line-height: 1.7; margin: 0;'>
-                    AURA leverages <strong>alternative data from India's RBI Account Aggregator framework</strong> with a 6-agent AI ecosystem 
-                    to assess creditworthiness using network usage, utility payments, and behavioral patterns.
-                </p>
-            </div>
-            <div>
-                <h3 style='color: #667eea; font-size: 1.3rem; margin-bottom: 0.8rem; font-weight: 700;'>Proven Impact</h3>
-                <p style='color: #64748b; line-height: 1.7; margin: 0;'>
-                    <strong>39% reduction in defaults</strong> through proactive intervention, 
-                    <strong>25-35% improvement</strong> in borrower creditworthiness, 
-                    and privacy-preserving ML via Homomorphic Encryption.
-                </p>
-            </div>
+        </div>
+        <div>
+            <span class="nav-badge">RBI Regulated</span>
+            <span class="nav-badge">MumbaiHacks 2025</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
     
-    # Trust Indicators
+    # Compact Value Proposition Section
     st.markdown("""
-    <div style='background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 1.5rem 2rem; border-radius: 12px; margin: 1.5rem 0;'>
-        <div style='display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1.5rem;'>
-            <div style='text-align: center;'>
-                <div style='font-size: 2rem; font-weight: 800; color: #667eea;'>1.6B+</div>
-                <div style='font-size: 0.9rem; color: #64748b; margin-top: 0.3rem;'>Accounts in AA Network</div>
-            </div>
-            <div style='text-align: center;'>
-                <div style='font-size: 2rem; font-weight: 800; color: #667eea;'>6</div>
-                <div style='font-size: 0.9rem; color: #64748b; margin-top: 0.3rem;'>Specialized AI Agents</div>
-            </div>
-            <div style='text-align: center;'>
-                <div style='font-size: 2rem; font-weight: 800; color: #667eea;'>100%</div>
-                <div style='font-size: 0.9rem; color: #64748b; margin-top: 0.3rem;'>Privacy Preserved</div>
-            </div>
-            <div style='text-align: center;'>
-                <div style='font-size: 2rem; font-weight: 800; color: #667eea;'>RBI</div>
-                <div style='font-size: 0.9rem; color: #64748b; margin-top: 0.3rem;'>Regulated Framework</div>
-            </div>
+    <div class="section-header">
+        <h2>Financial Inclusion Through Alternative Credit Assessment</h2>
+        <p>Leveraging RBI Account Aggregator Framework & Multi-Agent AI Architecture</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="info-grid">
+        <div class="info-card">
+            <h3>Problem Addressed</h3>
+            <p>142 million dormant bank accounts in India despite 89-96% financial inclusion. Traditional CIBIL scoring fails 70% without credit history, creating a $5.7T global financing gap.</p>
+        </div>
+        <div class="info-card">
+            <h3>Technical Solution</h3>
+            <p>Six-agent AI system utilizing Account Aggregator data (network usage, utility payments, behavioral patterns) with Homomorphic Encryption for privacy-preserving inference.</p>
+        </div>
+        <div class="info-card">
+            <h3>Validated Impact</h3>
+            <p>39% default rate reduction, 25-35% borrower creditworthiness improvement. Production-ready for NBFC/MFI deployment with regulatory compliance built-in.</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
     
-    # Professional Sidebar Navigation
+    # Compact Stats Bar
+    st.markdown("""
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-value">1.6B+</span>
+            <span class="stat-label">AA Network Accounts</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value">6</span>
+            <span class="stat-label">AI Agents</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value">100%</span>
+            <span class="stat-label">Privacy Preserved (HE)</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value">RBI</span>
+            <span class="stat-label">Compliant Framework</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Sidebar Navigation
     st.sidebar.markdown("""
-    <div style='text-align: center; padding: 2rem 0;'>
-        <h1 style='margin: 0; font-size: 2.5rem;'>AI</h1>
-        <h2 style='margin: 0.5rem 0; font-size: 1.5rem; font-weight: 700;'>AURA</h2>
-        <p style='margin: 0; font-size: 0.85rem; opacity: 0.8;'>Agentic AI Platform</p>
+    <div style='text-align: center; padding: 1.5rem 0; border-bottom: 1px solid #1e293b;'>
+        <div style='width: 60px; height: 60px; background: #2563eb; border-radius: 10px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; color: white;'>AR</div>
+        <h2 style='margin: 0; font-size: 1.3rem; font-weight: 700;'>AURA</h2>
+        <p style='margin: 0.3rem 0 0 0; font-size: 0.8rem; opacity: 0.8;'>Agent Navigation</p>
     </div>
     """, unsafe_allow_html=True)
-    
-    st.sidebar.markdown("---")
     
     page = st.sidebar.radio(
-        "Navigate to:",
+        "Select Dashboard:",
         ["Risk-Management Agent", "Credit-Coach Agent", "Model Insights"],
         label_visibility="visible"
     )
     
     st.sidebar.markdown("---")
     
-    # Sidebar Info Cards
     st.sidebar.markdown("""
-    <div style='background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;'>
-        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>The Problem</h3>
-        <p style='margin: 0; font-size: 0.85rem; line-height: 1.6;'>
-            <strong>142M Indians</strong> have dormant bank accounts<br/>
-            <strong>70%</strong> lack credit history<br/>
-            <strong>$5.7T</strong> global financing gap
-        </p>
+    <div style='padding: 1rem; background: rgba(37,99,235,0.1); border-radius: 8px; margin: 1rem 0;'>
+        <h3 style='font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 700;'>Target Market</h3>
+        <ul style='font-size: 0.8rem; line-height: 1.8; margin: 0; padding-left: 1.2rem;'>
+            <li>142M dormant PMJDY accounts</li>
+            <li>70% credit-invisible population</li>
+            <li>$5.7T global financing gap</li>
+        </ul>
     </div>
-    """, unsafe_allow_html=True)
     
-    st.sidebar.markdown("""
-    <div style='background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;'>
-        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>Our Solution</h3>
-        <div style='font-size: 0.85rem; line-height: 1.8;'>
-            <div style='margin: 0.5rem 0;'>• Data Aggregation</div>
-            <div style='margin: 0.5rem 0;'>• Feature Engineering</div>
-            <div style='margin: 0.5rem 0;'>• Risk Assessment</div>
-            <div style='margin: 0.5rem 0;'>• Explainability</div>
-            <div style='margin: 0.5rem 0;'>• Risk Management</div>
-            <div style='margin: 0.5rem 0;'>• Credit Coaching</div>
-        </div>
+    <div style='padding: 1rem; background: rgba(37,99,235,0.1); border-radius: 8px; margin: 1rem 0;'>
+        <h3 style='font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 700;'>Architecture</h3>
+        <ul style='font-size: 0.8rem; line-height: 1.8; margin: 0; padding-left: 1.2rem;'>
+            <li>Data Aggregation (AA Framework)</li>
+            <li>Feature Engineering (nuFormer)</li>
+            <li>Risk Assessment (HE Inference)</li>
+            <li>Explainability (SHAP + LIME)</li>
+            <li>Risk Management (Proactive)</li>
+            <li>Credit Coaching (Empowerment)</li>
+        </ul>
     </div>
-    """, unsafe_allow_html=True)
     
-    st.sidebar.markdown("""
-    <div style='background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;'>
-        <h3 style='margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;'>Impact</h3>
-        <div style='font-size: 0.85rem; line-height: 1.8;'>
-            <div style='margin: 0.5rem 0;'><strong>39%</strong> default reduction</div>
-            <div style='margin: 0.5rem 0;'><strong>25-35%</strong> credit improvement</div>
-            <div style='margin: 0.5rem 0;'><strong>142M</strong> accounts activated</div>
-        </div>
+    <div style='padding: 1rem; background: rgba(37,99,235,0.1); border-radius: 8px; margin: 1rem 0;'>
+        <h3 style='font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 700;'>Compliance</h3>
+        <ul style='font-size: 0.8rem; line-height: 1.8; margin: 0; padding-left: 1.2rem;'>
+            <li>RBI Account Aggregator</li>
+            <li>Homomorphic Encryption</li>
+            <li>SHAP + LIME Transparency</li>
+            <li>2025 NTC Mandate Ready</li>
+        </ul>
     </div>
     """, unsafe_allow_html=True)
     
     st.sidebar.markdown("---")
     
     st.sidebar.markdown("""
-    <div style='text-align: center; padding: 1rem 0; font-size: 0.75rem; opacity: 0.7;'>
-        <p style='margin: 0.3rem 0;'>Homomorphic Encryption</p>
-        <p style='margin: 0.3rem 0;'>SHAP + LIME Explainability</p>
-        <p style='margin: 0.3rem 0;'>RBI Account Aggregator</p>
+    <div style='text-align: center; padding: 1rem 0; font-size: 0.7rem; opacity: 0.6;'>
+        <p style='margin: 0.2rem 0;'>© 2025 AURA Platform</p>
+        <p style='margin: 0.2rem 0;'>MumbaiHacks FinTech Track</p>
     </div>
     """, unsafe_allow_html=True)
     
     # Load data and train model
-    with st.spinner("Initializing AURA agents and ML models..."):
+    with st.spinner("Initializing AI agents and ML models..."):
         df = load_data()
         model, scaler, feature_cols, metrics = train_model(df)
     
