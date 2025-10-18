@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "console": "externalTerminal",
+      "cwd": "c:/Users/gulam/Desktop/Credit/AURA_MUMBAIHACKS_2025",
+      "program": "c:/Users/gulam/Desktop/Credit/AURA_MUMBAIHACKS_2025/build/Debug/outDebug"
+    }
+  ]
+}
