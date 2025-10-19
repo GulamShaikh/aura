@@ -336,32 +336,6 @@ _(If no CSV is found, AURA will generate synthetic data for demonstration)_
 
 ---
 
-## 🎥 Demo Walkthrough
-
-### For Demo: Navigate Through These Sections
-
-1. **🏦 Risk-Management Agent Dashboard**
-
-   - View portfolio health metrics
-   - See proactive alerts for at-risk borrowers
-   - Explore agent-generated intervention strategies
-   - Review defaulter recovery intelligence
-
-2. **🤝 Credit-Coach Agent Demo**
-
-   - Select any borrower profile
-   - View their current credit health scores
-   - Read personalized coaching plans
-   - See actionable 30-day improvement strategies
-
-3. **📊 Model Insights**
-   - Understand feature importance
-   - Learn about alternative data sources
-   - See model performance metrics
-   - Explore the "Agentic AI" explanation
-
----
-
 ## 🔮 Future Roadmap
 
 ### Phase 1: MVP (Current)
@@ -395,10 +369,10 @@ _(If no CSV is found, AURA will generate synthetic data for demonstration)_
 
 ## 👥 Team
 
-- **[Gulam Dastgir]** - AI Engineer & Data Scientist
-- **[Altamash Shaikh]** - Full Stack ML Engineer
-- **[Arrol D'souza]** - Product & UX Designer
-- **[Aniska Bachar]** - PPT Maker
+- **[Gulam Dastgir]** - AI & Data Engineer 
+- **[Altamash Shaikh]** - ML Engineer
+- **[Arrol D'souza]** - Full Stack Developer
+- **[Aniska Bachar]** - UI/UX Designer
 
 ---
 
