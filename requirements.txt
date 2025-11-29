@@ -1,4 +1,3 @@
-# AURA Dependencies - Updated Nov 2025
 streamlit
 pandas
 numpy

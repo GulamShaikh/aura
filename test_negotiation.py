@@ -1,7 +1,6 @@
 """
 Quick Verification Script for AURA Negotiation Engine
 Run this to test all core functions automatically
-Last Updated: November 2025 - Agentic AI Integration
 """
 
 import sys

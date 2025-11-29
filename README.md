@@ -2,8 +2,6 @@
 
 **MumbaiHacks 2025 - FinTech Track: Agentic AI for Financial Inclusion**
 
-> **Version 2.0** | Updated: November 2025 | Agentic Negotiation Engine Live
-
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
@@ -371,7 +369,7 @@ _(If no CSV is found, AURA will generate synthetic data for demonstration)_
 
 ## 👥 Team
 
-- **[Gulam Dastgir]** - AI & Data Engineer 
+- **[Gulam Dastgir]** - AI & Data Engineer
 - **[Altamash Shaikh]** - ML Engineer
 - **[Arrol D'souza]** - Full Stack Developer
 - **[Aniska Bachar]** - UI/UX Designer

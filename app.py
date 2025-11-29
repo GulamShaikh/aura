@@ -1,7 +1,6 @@
 """
 AURA: Agentic Underwriting & Risk Assistant
 MumbaiHacks 2025 Submission - FinTech Track: Agentic AI
-Version 2.0 - November 2025 | Live Negotiation Engine with Autonomous Decision-Making
 
 PROBLEM: 142 million Indians have dormant bank accounts (26% of PMJDY accounts).
          They have ACCESS but lack ACTIVATION - no credit history for loans.
