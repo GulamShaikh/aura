@@ -31,6 +31,243 @@ import plotly.graph_objects as go
 import warnings
 warnings.filterwarnings('ignore')
 
+# Additional imports for negotiation engine
+import time
+from datetime import datetime, timedelta
+
+# ============================================================================
+# LIVE NEGOTIATION: Backend / Session State Helpers
+# ============================================================================
+
+# Initialize session state keys (safe to call repeatedly)
+def init_negotiation_state():
+    st.session_state.setdefault("negotiations", {})           # dict: user_id -> negotiation details
+    st.session_state.setdefault("funds_recovered", 0)         # total amount agent recovered
+    st.session_state.setdefault("active_user", None)          # current user in demo
+    st.session_state.setdefault("negotiation_log", [])        # chronological log entries
+    st.session_state.setdefault("agent_decision_log", [])     # autonomous agent decisions (reason trace)
+
+# Create demo borrower (idempotent with custom params)
+def get_or_create_demo_user(user_id="USR1001", name="Gulam", wallet=2000, missed_amount=2000, offer_amount=500, expiry_days=7):
+    # If you already have df with 'user_id', you can map to actual row. For demo, create a mini dict.
+    if user_id not in st.session_state.get("negotiations", {}):
+        demo = {
+            "user_id": user_id,
+            "name": name,
+            "wallet": wallet,
+            "missed_amount": missed_amount,
+            "offer_amount": offer_amount,
+            "expiry_days": expiry_days,
+            "status": "pending",
+            "started_at": datetime.utcnow().isoformat(),
+            "accepted_at": None,
+            "last_message": None,
+            "chat_history": []  # store conversation thread
+        }
+        st.session_state["negotiations"][user_id] = demo
+        st.session_state["active_user"] = user_id
+        st.session_state["negotiation_log"].append(
+            (datetime.utcnow().isoformat(), f"Demo user {user_id} created")
+        )
+    return st.session_state["negotiations"][user_id]
+
+# Seed multiple demo users with varied profiles
+def seed_demo_users():
+    profiles = [
+        {"user_id": "USR1001", "name": "Gulam", "wallet": 2000, "missed_amount": 2000, "offer_amount": 500, "expiry_days": 7},
+        {"user_id": "USR1002", "name": "Priya", "wallet": 1500, "missed_amount": 1800, "offer_amount": 400, "expiry_days": 10},
+        {"user_id": "USR1003", "name": "Raj", "wallet": 3000, "missed_amount": 2500, "offer_amount": 800, "expiry_days": 5},
+        {"user_id": "USR1004", "name": "Anjali", "wallet": 1200, "missed_amount": 1500, "offer_amount": 350, "expiry_days": 14},
+    ]
+    for profile in profiles:
+        get_or_create_demo_user(**profile)
+
+# Start negotiation (idempotent start)
+def start_negotiation(user_id, offer_amount=None, expiry_days=None, agent_message=None, decision_reason=None):
+    init_negotiation_state()
+    negos = st.session_state["negotiations"]
+    if user_id not in negos:
+        get_or_create_demo_user(user_id)
+    entry = negos[user_id]
+    # If already restructured, do nothing
+    if entry["status"] == "restructured":
+        return entry
+    # populate/overwrite offer fields if provided
+    if offer_amount is not None:
+        entry["offer_amount"] = int(offer_amount)
+    if expiry_days is not None:
+        entry["expiry_days"] = int(expiry_days)
+    entry["status"] = "offer_sent"
+    entry["started_at"] = entry.get("started_at") or datetime.utcnow().isoformat()
+    entry["last_message"] = agent_message or (
+        f"Hi {entry['name']}, you missed your payment. I see you have ₹{entry['wallet']:,}. "
+        f"If you pay ₹{entry['offer_amount']:,} today, I can extend the rest for {entry['expiry_days']} days. Do you accept?"
+    )
+    # Append agent message to chat history for continuity
+    entry.setdefault("chat_history", [])
+    entry["chat_history"].append({
+        "role": "agent",
+        "message": entry["last_message"],
+        "timestamp": datetime.utcnow().isoformat()
+    })
+    st.session_state["negotiation_log"].append(
+        (datetime.utcnow().isoformat(), f"Offer sent to {user_id}: ₹{entry['offer_amount']}")
+    )
+    if decision_reason:
+        st.session_state["agent_decision_log"].append({
+            "user_id": user_id,
+            "offer": entry['offer_amount'],
+            "expiry": entry['expiry_days'],
+            "reason": decision_reason,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    return entry
+
+# Accept offer (idempotent and safe)
+def accept_offer(user_id):
+    init_negotiation_state()
+    negos = st.session_state["negotiations"]
+    if user_id not in negos:
+        raise ValueError("No negotiation exists for user_id=" + str(user_id))
+    entry = negos[user_id]
+    # If already accepted/restructured, return unchanged (no double counting)
+    if entry.get("status") == "restructured":
+        return entry
+    # Only accept if offer was sent (simple happy path guard)
+    if entry.get("status") not in ("offer_sent", "pending"):
+        # still allow accept for demo, but log it
+        st.session_state["negotiation_log"].append(
+            (datetime.utcnow().isoformat(), f"Accept invoked for {user_id} but status was {entry.get('status')}")
+        )
+    # update accepted
+    entry["status"] = "restructured"
+    entry["accepted_at"] = datetime.utcnow().isoformat()
+    # increment funds_recovered by the offered immediate payment, safe-guarded
+    recovered = entry.get("offer_amount", 0)
+    # detect if already counted (add a flag)
+    if not entry.get("_counted"):
+        st.session_state["funds_recovered"] = int(st.session_state.get("funds_recovered", 0)) + int(recovered)
+        entry["_counted"] = True
+    # Add to chat history
+    entry["chat_history"] = entry.get("chat_history", [])
+    entry["chat_history"].append({
+        "role": "borrower",
+        "message": "I accept the offer. Thank you!",
+        "timestamp": datetime.utcnow().isoformat()
+    })
+    st.session_state["negotiation_log"].append(
+        (datetime.utcnow().isoformat(), f"{user_id} accepted offer; recovered ₹{recovered}")
+    )
+    return entry
+
+# Add message to chat history
+def add_chat_message(user_id, role, message):
+    if user_id in st.session_state["negotiations"]:
+        entry = st.session_state["negotiations"][user_id]
+        entry["chat_history"] = entry.get("chat_history", [])
+        entry["chat_history"].append({
+            "role": role,
+            "message": message,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+        st.session_state["negotiation_log"].append(
+            (datetime.utcnow().isoformat(), f"{user_id} ({role}): {message[:50]}...")
+        )
+
+# Simple getter for summary info
+def negotiation_summary():
+    init_negotiation_state()
+    total = st.session_state.get("funds_recovered", 0)
+    negotiations = st.session_state.get("negotiations", {})
+    counts = {"pending":0, "offer_sent":0, "restructured":0, "rejected":0}
+    for v in negotiations.values():
+        counts[v.get("status","pending")] = counts.get(v.get("status","pending"), 0) + 1
+    return {"total_recovered": total, "counts": counts, "negotiations": negotiations, "log": st.session_state.get("negotiation_log", []), "decisions": st.session_state.get("agent_decision_log", [])}
+
+# ---------------------------------------------------------------------------
+# Agent Policy & Autonomous Functions
+# ---------------------------------------------------------------------------
+import re
+
+def decide_offer(entry):
+    """Policy function selecting offer & expiry with rationale.
+    Heuristic tiers based on wallet and missed_amount.
+    """
+    wallet = entry.get('wallet', 0)
+    missed = entry.get('missed_amount', 0)
+    # Base offer: 25% of missed, capped by wallet, min 250
+    raw_offer = int(max(250, min(wallet, missed * 0.25)))
+    # Risk proxy: ratio missed/wallet (higher ratio => more constrained)
+    ratio = missed / wallet if wallet else 1
+    if ratio > 1.2:
+        expiry = 14
+        strategy = "High burden detected; extending window to encourage partial recovery." 
+    elif ratio > 0.8:
+        expiry = 10
+        strategy = "Moderate burden; balanced short extension." 
+    else:
+        expiry = 7
+        strategy = "Low relative burden; shorter grace to maintain momentum."
+    message = (
+        f"Hello {entry['name']}. I assessed your situation: missed ₹{missed:,} vs wallet ₹{wallet:,}. "
+        f"If you can clear ₹{raw_offer:,} today, I will extend the remaining balance for {expiry} days." 
+        " Does this work for you?"
+    )
+    reason = f"offer={raw_offer} expiry={expiry} ratio={ratio:.2f}; {strategy}"
+    return raw_offer, expiry, message, reason
+
+def auto_negotiate_all():
+    """Scan pending users and autonomously initiate negotiations using policy."""
+    init_negotiation_state()
+    actions = 0
+    for user_id, entry in st.session_state["negotiations"].items():
+        if entry.get('status') == 'pending' and entry.get('wallet',0) >= 300:
+            offer, expiry, msg, reason = decide_offer(entry)
+            start_negotiation(user_id, offer_amount=offer, expiry_days=expiry, agent_message=msg, decision_reason=reason)
+            actions += 1
+    return actions
+
+def handle_counter_offer_text(user_id, text):
+    """Parse borrower counter offer and adapt decision if within acceptable bounds."""
+    if user_id not in st.session_state.get('negotiations', {}):
+        return "No active negotiation."
+    entry = st.session_state['negotiations'][user_id]
+    nums = re.findall(r"\d+", text.replace('₹',''))
+    if not nums:
+        return "I noted your response. Could you specify an amount (e.g., 300)?"
+    proposed = int(nums[0])
+    current = entry.get('offer_amount', 0)
+    min_threshold = max(200, int(current * 0.5))  # do not go below 50% of original offer (or ₹200)
+    if proposed >= current:
+        # Accept immediately at current terms
+        add_chat_message(user_id, 'agent', f"Your proposed amount matches or exceeds the offer (₹{proposed}). Proceeding to restructure.")
+        accept_offer(user_id)
+        return f"Accepted at ₹{proposed}. Restructuring confirmed."
+    elif proposed >= min_threshold:
+        # Adjust offer downward, then accept
+        entry['offer_amount'] = proposed
+        add_chat_message(user_id, 'agent', f"I can approve ₹{proposed} today with same {entry['expiry_days']} day extension. Processing...")
+        accept_offer(user_id)
+        # Log decision adaptation
+        st.session_state['agent_decision_log'].append({
+            'user_id': user_id,
+            'offer': proposed,
+            'expiry': entry['expiry_days'],
+            'reason': f"Counter-offer accepted. Proposed {proposed} >= threshold {min_threshold}.",
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        return f"Counter-offer accepted at ₹{proposed}."
+    else:
+        add_chat_message(user_id, 'agent', f"₹{proposed} is below the feasible threshold (₹{min_threshold}). Could you meet at ₹{min_threshold}?")
+        st.session_state['agent_decision_log'].append({
+            'user_id': user_id,
+            'offer': current,
+            'expiry': entry['expiry_days'],
+            'reason': f"Counter too low ({proposed} < {min_threshold}). Suggested minimum.",
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        return f"₹{proposed} is too low; minimum acceptable is ₹{min_threshold}."
+
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
@@ -785,6 +1022,9 @@ def credit_coach_agent_logic(borrower_row):
 def main():
     """Main application entry point with navigation."""
     
+    # Initialize negotiation state early
+    init_negotiation_state()
+    
     # Professional Top Navigation Bar
     st.markdown("""
     <div class="top-nav">
@@ -860,7 +1100,7 @@ def main():
     
     page = st.sidebar.radio(
         "Select Dashboard:",
-        ["Risk-Management Agent", "Credit-Coach Agent", "Model Insights"],
+        ["Risk-Management Agent", "Credit-Coach Agent", "Model Insights", "Live Negotiation"],
         label_visibility="visible"
     )
     
@@ -908,6 +1148,38 @@ def main():
     </div>
     """, unsafe_allow_html=True)
     
+    # DEBUG: Negotiation Test Harness (remove before production)
+    with st.expander("🔧 DEBUG: Negotiation Engine Test", expanded=False):
+        st.markdown("**Backend Integration Tests** - Test negotiation engine functions")
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            if st.button("Create USR1001"):
+                result = get_or_create_demo_user("USR1001")
+                st.json(result)
+        with col2:
+            if st.button("Start Negotiation"):
+                result = start_negotiation("USR1001")
+                st.success(f"Offer sent: ₹{result['offer_amount']}")
+                st.json(result)
+        with col3:
+            if st.button("Accept Offer"):
+                result = accept_offer("USR1001")
+                st.balloons()
+                st.success(f"✅ Restructured! Recovered: ₹{result['offer_amount']}")
+                st.json(result)
+        with col4:
+            if st.button("Show Summary"):
+                summary = negotiation_summary()
+                st.metric("Total Recovered", f"₹{summary['total_recovered']:,}")
+                st.json(summary)
+        
+        st.markdown("**Session State Snapshot:**")
+        st.json({
+            "negotiations": st.session_state.get("negotiations", {}),
+            "funds_recovered": st.session_state.get("funds_recovered", 0),
+            "negotiation_log": st.session_state.get("negotiation_log", [])[-5:]  # last 5 entries
+        })
+    
     # Load data and train model
     with st.spinner("Initializing AI agents and ML models..."):
         df = load_data()
@@ -918,6 +1190,8 @@ def main():
         render_risk_management_dashboard(df, model, scaler, feature_cols)
     elif page == "Credit-Coach Agent":
         render_credit_coach_demo(df)
+    elif page == "Live Negotiation":
+        render_live_negotiation_page()
     else:
         render_model_insights(metrics, feature_cols)
 
@@ -1298,6 +1572,202 @@ def render_model_insights(metrics, feature_cols):
         - ⚡ 90% faster intervention response time
         - 💰 15% reduction in collection costs
         """)
+
+# ============================================================================
+# LIVE NEGOTIATION PAGE (Borrower + Lender UI)
+# ============================================================================
+
+def render_live_negotiation_page():
+    st.title("🤝 Live Negotiation Demo (Agentic AI)")
+
+    init_negotiation_state()
+    if not st.session_state.get("negotiations"):
+        seed_demo_users()
+
+    # Top controls
+    top_col1, top_col2, top_col3 = st.columns([2,2,1])
+    with top_col1:
+        view = st.radio("View As:", ["Borrower", "Lender", "Analytics"], horizontal=True)
+    with top_col2:
+        selected_user = None
+        if view == "Borrower":
+            users = list(st.session_state["negotiations"].keys())
+            selected_user = st.selectbox("Select User:", users, index=0)
+    with top_col3:
+        if st.button("🤖 Run Agent", help="Autonomously initiate offers for pending users"):
+            actions = auto_negotiate_all()
+            st.success(f"Agent executed {actions} autonomous offer(s)")
+            st.rerun()
+        if st.button("🔄 Reset", help="Reset demo state"):
+            st.session_state["negotiations"] = {}
+            st.session_state["funds_recovered"] = 0
+            st.session_state["negotiation_log"] = []
+            st.session_state["agent_decision_log"] = []
+            seed_demo_users()
+            st.rerun()
+        if st.button("🎬 Demo Preset", help="Seed users, auto-run agent, accept one offer for clean screenshots"):
+            # Fresh seed
+            st.session_state["negotiations"] = {}
+            st.session_state["funds_recovered"] = 0
+            st.session_state["negotiation_log"] = []
+            st.session_state["agent_decision_log"] = []
+            seed_demo_users()
+            # Auto initiate offers
+            auto_negotiate_all()
+            # Accept one reasonable offer (prefer USR1002 if present)
+            target_id = "USR1002" if "USR1002" in st.session_state["negotiations"] else list(st.session_state["negotiations"].keys())[0]
+            try:
+                # Ensure offer exists
+                entry = st.session_state["negotiations"][target_id]
+                if entry.get("status") == "pending":
+                    offer, expiry, msg, reason = decide_offer(entry)
+                    start_negotiation(target_id, offer_amount=offer, expiry_days=expiry, agent_message=msg, decision_reason=reason)
+                accept_offer(target_id)
+                st.success(f"🎯 Preset ready: {target_id} restructured. Capture screenshots now!")
+                st.balloons()
+            except Exception as e:
+                st.warning(f"Preset encountered an issue: {e}")
+            st.rerun()
+
+    # Borrower context
+    user = None
+    if view == "Borrower" and selected_user:
+        user = st.session_state["negotiations"][selected_user]
+
+    # ----------------------------------------
+    # BORROWER VIEW
+    # ----------------------------------------
+    if view == "Borrower" and user:
+        st.subheader(f"📌 Borrower Dashboard – {user['name']}")
+
+        # Missed Payment Alert
+        st.markdown(f"""
+        <div style='padding:15px;background:#fee2e2;border-left:5px solid #b91c1c;border-radius:8px;color:#7f1d1d;font-weight:600;'>
+            ⚠️ Missed Payment: You have an overdue amount of ₹{user['missed_amount']:,}
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.write("")
+
+        # Auto-start negotiation (if not done)
+        if user["status"] == "pending":
+            start_negotiation(user["user_id"])
+
+        # AI Agent Message
+        if user.get("last_message"):
+            st.chat_message("ai").markdown(user["last_message"])
+
+        st.write("")
+
+        # Action buttons
+        colA, colB = st.columns(2)
+
+        with colA:
+            if st.button("✅ Accept Offer", key="accept_offer_ui", disabled=(user['status']=='restructured')):
+                accept_offer(user["user_id"])
+                st.success("Offer Accepted! Your loan has been restructured.")
+                st.balloons()
+                st.rerun()
+
+        with colB:
+            reply = st.text_input("Send a message / counter-offer (e.g., 300)")
+            if st.button("Send Response") and reply:
+                st.chat_message("human").markdown(reply)
+                add_chat_message(user["user_id"], "borrower", reply)
+                agent_feedback = handle_counter_offer_text(user["user_id"], reply)
+                st.chat_message("ai").markdown(agent_feedback)
+                st.rerun()
+
+        # Show status
+        st.info(f"📊 Current Status: **{user['status'].upper()}**")
+
+
+    # ----------------------------------------
+    # LENDER VIEW
+    # ----------------------------------------
+    elif view == "Lender":
+        st.subheader("🏦 Lender Dashboard – Live Negotiations")
+
+        summary = negotiation_summary()
+
+        # Funds recovered metric card
+        metA, metB, metC, metD = st.columns(4)
+        with metA:
+            st.metric("💰 Funds Recovered", f"₹{summary['total_recovered']:,}")
+        with metB:
+            st.metric("🟢 Restructured", summary['counts']['restructured'])
+        with metC:
+            auto_actions = len(summary.get('decisions', []))
+            st.metric("🤖 Agent Actions", auto_actions)
+        with metD:
+            total_negos = sum(summary['counts'].values()) or 1
+            success_rate = summary['counts']['restructured'] / total_negos * 100
+            st.metric("✅ Success Rate", f"{success_rate:.0f}%")
+
+        st.markdown("### Active Negotiation Records")
+
+        for uid, record in summary["negotiations"].items():
+            with st.expander(f"{record['name']} ({uid}) – {record['status'].upper()}"):
+                colL, colR = st.columns(2)
+                with colL:
+                    st.write(f"Wallet: ₹{record['wallet']:,}")
+                    st.write(f"Missed: ₹{record['missed_amount']:,}")
+                    st.write(f"Offer: ₹{record['offer_amount']:,}")
+                    st.write(f"Expiry: {record['expiry_days']} days")
+                with colR:
+                    st.write(f"Started: {record.get('started_at','')[:19]}")
+                    st.write(f"Accepted: {(record.get('accepted_at') or '-')[:19]}")
+                    if record['status'] == 'pending':
+                        if st.button(f"Initiate Offer ({uid})", key=f"init_{uid}"):
+                            offer, expiry, msg, reason = decide_offer(record)
+                            start_negotiation(uid, offer_amount=offer, expiry_days=expiry, agent_message=msg, decision_reason=reason)
+                            st.success("Offer initiated")
+                            st.rerun()
+                    elif record['status'] == 'offer_sent':
+                        if st.button(f"Force Restructure ({uid})", key=f"force_{uid}"):
+                            accept_offer(uid)
+                            st.success("Restructured")
+                            st.rerun()
+                # Decision rationale history for this user
+                decisions = [d for d in summary.get('decisions', []) if d['user_id']==uid]
+                if decisions:
+                    st.markdown("**Agent Decision Rationale:**")
+                    for d in decisions[-3:]:
+                        st.caption(f"{d['timestamp']}: {d['reason']}")
+
+        st.markdown("### 📝 Event Log")
+        for ts, log in summary["log"][-25:]:
+            st.write(f"**{ts[:19]}** – {log}")
+
+    elif view == "Analytics":
+        st.subheader("📊 Negotiation Analytics")
+        summary = negotiation_summary()
+        colA, colB, colC = st.columns(3)
+        with colA:
+            st.metric("Total Users", len(summary['negotiations']))
+            total_missed = sum(v['missed_amount'] for v in summary['negotiations'].values())
+            st.metric("Total Missed", f"₹{total_missed:,}")
+        with colB:
+            st.metric("Recovered", f"₹{summary['total_recovered']:,}")
+            recovery_rate = (summary['total_recovered']/total_missed*100) if total_missed else 0
+            st.metric("Recovery Rate", f"{recovery_rate:.1f}%")
+        with colC:
+            st.metric("Agent Actions", len(summary.get('decisions', [])))
+            st.metric("Restructures", summary['counts']['restructured'])
+        # Status distribution chart
+        status_df = pd.DataFrame([
+            {"Status": k.title(), "Count": v} for k,v in summary['counts'].items() if v>0
+        ])
+        if not status_df.empty:
+            fig = go.Figure(go.Bar(x=status_df['Status'], y=status_df['Count'], marker_color=['#fbbf24','#f59e0b','#10b981','#ef4444']))
+            fig.update_layout(title="Status Distribution", xaxis_title="Status", yaxis_title="Count")
+            st.plotly_chart(fig, use_container_width=True)
+        # Decisions table
+        if summary.get('decisions'):
+            st.markdown("### Recent Agent Decisions")
+            dec_df = pd.DataFrame(summary['decisions'])
+            st.dataframe(dec_df.tail(50), use_container_width=True)
+
 
 # ============================================================================
 # APPLICATION ENTRY POINT
